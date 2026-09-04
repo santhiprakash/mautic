@@ -185,6 +185,9 @@ final class PublicControllerRedirectTest extends MauticMysqlTestCase
         $hit = $this->em->getRepository(Hit::class)->findOneBy(['url' => $url]);
         $this->assertInstanceOf(Hit::class, $hit);
         $this->assertSame($email->getId(), $hit->getEmail()->getId());
+
+        $this->em->refresh($stat);
+        $this->assertTrue($stat->isRead(), 'An explicit email click should mark the email stat as read.');
     }
 
     public function testRedirectWithDntHeaderTracksEmailClick(): void
@@ -241,6 +244,9 @@ final class PublicControllerRedirectTest extends MauticMysqlTestCase
         $hit = $this->em->getRepository(Hit::class)->findOneBy(['url' => $url]);
         $this->assertInstanceOf(Hit::class, $hit);
         $this->assertSame($email->getId(), $hit->getEmail()->getId());
+
+        $this->em->refresh($stat);
+        $this->assertTrue($stat->isRead(), 'An explicit email click should mark the email stat as read.');
     }
 
     private function getEncodedClickThroughValue(string $trackingHash, int $leadId): string
